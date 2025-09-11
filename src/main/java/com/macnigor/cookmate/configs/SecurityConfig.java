@@ -60,10 +60,5 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    /*@Bean
-    @Primary  // Используем аннотацию для явного указания главного бина
-    public UserDetailsService userDetailsService(UserService userService) {
-        log.info("Configuring UserDetailsService...");
-        return userService;
-    }*/
+
 }

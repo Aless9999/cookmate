@@ -10,9 +10,12 @@
 
 package com.macnigor.cookmate.dto;
 
+import com.macnigor.cookmate.entity.Ingredient;
 import com.macnigor.cookmate.entity.Recipe;
+import com.macnigor.cookmate.entity.RecipeIngredient;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public record RecipeDto(
         Long id,
@@ -37,5 +40,26 @@ public record RecipeDto(
                 ingredients
         );
     }
+
+    public Recipe toEntity() {
+        Recipe recipe = new Recipe();
+        recipe.setTitle(this.title);
+        recipe.setDescription(this.description);
+        recipe.setInstructions(this.instructions);
+        recipe.setImageUrl(this.imageUrl);
+
+        List<RecipeIngredient> recipeIngredients = this.ingredients.stream()
+                .map(name -> {
+                    RecipeIngredient recipeIngredient = new RecipeIngredient();
+                    Ingredient ingredient = new Ingredient();
+                    ingredient.setName(name);
+                    recipeIngredient.setIngredient(ingredient);
+                    recipeIngredient.setRecipe(recipe);
+                    return recipeIngredient;
+                }).toList();
+        return recipe;
+
+    }
+
 }
 

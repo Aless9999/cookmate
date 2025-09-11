@@ -12,6 +12,7 @@ package com.macnigor.cookmate.services;
 
 import com.macnigor.cookmate.dto.RecipeDto;
 import com.macnigor.cookmate.dto.RecipeMatchDto;
+import com.macnigor.cookmate.entity.Recipe;
 import com.macnigor.cookmate.repositories.RecipeRepository;
 import org.springframework.stereotype.Service;
 
@@ -49,5 +50,7 @@ public class RecipeService {
                 .sorted(Comparator.comparingDouble(RecipeMatchDto::score).reversed())
                 .toList();
     }
+
+
 }
 
