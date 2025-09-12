@@ -40,16 +40,16 @@ public class UserController {
     // Регистрация
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@Valid @RequestBody UserRegisterDto userRegisterDto) {
-        log.info("Received registration request for username: {}", userRegisterDto.getUsername());
-        User user = userService.createNewUser(userRegisterDto);
-        log.info("User {} successfully registered", user.getUsername());
-        return ResponseEntity.ok("User with username " + user.getUsername() + " registered");
+        log.info("Попытка регистрации нового пользователя с именем: {}", userRegisterDto.getUsername());
+        userService.createNewUser(userRegisterDto);
+        log.info("Пользователь {} успешно зарегистрирован", userRegisterDto.getUsername());
+        return ResponseEntity.ok("User with username " + userRegisterDto.getUsername() + " registered");
     }
 
     // Логин
     @PostMapping("/login")
     public ResponseEntity<ApiResponse> loginUser(@Valid @RequestBody UserLoginDto loginDto) {
-        log.info("Received login request for username: {}", loginDto.getUsername());
+        log.info("Попытка входа пользователя: {}", loginDto.getUsername());
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -59,14 +59,14 @@ public class UserController {
             );
 
             log.debug("Authentication object: {}", authentication);
-            log.info("User {} logged in successfully", loginDto.getUsername());
+            log.info("Пользователь {} аутентифицирован", loginDto.getUsername());
 
             return ResponseEntity.ok(new ApiResponse("Login successful for " + loginDto.getUsername()));
         } catch (AuthenticationException ex) {
-            log.warn("Login failed for {}. Reason: {}", loginDto.getUsername(), ex.getMessage());
+            log.warn("Ошибка входа {}. Reason: {}", loginDto.getUsername(), ex.getMessage());
             return ResponseEntity.status(401).body(new ApiResponse("Invalid username or password"));
         } catch (Exception ex) {
-            log.error("Unexpected error during login for {}", loginDto.getUsername(), ex);
+            log.error("Не найден пользователь {}", loginDto.getUsername(), ex);
             return ResponseEntity.status(500).body(new ApiResponse("Unexpected error occurred"));
         }
     }
