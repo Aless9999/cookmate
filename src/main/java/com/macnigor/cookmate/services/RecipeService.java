@@ -12,7 +12,6 @@ package com.macnigor.cookmate.services;
 
 import com.macnigor.cookmate.dto.RecipeDto;
 import com.macnigor.cookmate.dto.RecipeMatchDto;
-import com.macnigor.cookmate.entity.Recipe;
 import com.macnigor.cookmate.repositories.RecipeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

@@ -21,14 +21,14 @@ import com.macnigor.cookmate.repositories.IngredientRepository;
 import com.macnigor.cookmate.repositories.RecipeIngredientRepository;
 import com.macnigor.cookmate.repositories.RecipeRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-
-
+@Component
 @RequiredArgsConstructor
 public class RecipeImportService {
 

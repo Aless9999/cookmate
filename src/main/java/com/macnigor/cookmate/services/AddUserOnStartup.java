@@ -11,9 +11,10 @@
 package com.macnigor.cookmate.services;
 import com.macnigor.cookmate.dto.UserRegisterDto;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-
+@Configuration
 public class AddUserOnStartup implements CommandLineRunner {
 
     private final PasswordEncoder passwordEncoder;

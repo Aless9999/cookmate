@@ -16,16 +16,20 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-
+@Configuration
 @RequiredArgsConstructor
 public class DataLoaderConfig {
 
     private final RecipeImportService recipeImportService;
+    private boolean isDataLoaded = false;
 
     @Bean
     public CommandLineRunner loadData() {
         return args -> {
-            recipeImportService.importRecipesFromJson();
+            if (!isDataLoaded) {
+                recipeImportService.importRecipesFromJson();
+                isDataLoaded = true;  // Помечаем, что данные уже загружены
+            }
         };
     }
 }
