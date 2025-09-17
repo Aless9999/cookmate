@@ -21,8 +21,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class RecipeMessageService {
 
-    @Value("${images.folder}")
-    private String imagesFolder; // базовый URL для изображений, например "http://localhost:8080/images/"
+    @Value("${base.url}")
+    private String baseUrl; // базовый URL для изображений, например "http://localhost:8080/images/"
 
     public RecipeMessageDto createRecipeMessage(Recipe recipe) {
         // Формируем строку рецепта
@@ -62,8 +62,8 @@ public class RecipeMessageService {
         if (recipe.getImageUrl() != null && !recipe.getImageUrl().isEmpty()) {
             // Получаем только имя файла из пути (кроссплатформенно)
             String fileName = new java.io.File(recipe.getImageUrl()).getName();
-            imageUrl = imagesFolder + fileName;
-            message.append("\n🖼️ *Посмотреть изображение:* ").append(imageUrl).append("\n");
+            imageUrl = baseUrl + fileName;
+            message.append(imageUrl).append("\n");
         } else {
             message.append("\n🖼️ *Изображение не доступно*\n");
         }
