@@ -44,6 +44,7 @@ public class RecipeService {
         List<RecipeMatchDto> matches = recipeRepository.findAll().stream()
                 .map(recipe -> {
                     List<String> recipeIngredients = recipe.getRecipeIngredients().stream()
+
                             .map(ri -> ri.getIngredient().getName().toLowerCase())
                             .toList();
 
@@ -52,6 +53,7 @@ public class RecipeService {
                     // Считаем количество совпадений между ингредиентами рецепта и пользовательскими
                     long matchCount = recipeIngredients.stream()
                             .filter(normalized::contains)
+
                             .count();
 
                     log.debug("Рецепт {}: совпадений с ингредиентами пользователя: {}", recipe.getTitle(), matchCount);

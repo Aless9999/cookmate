@@ -37,7 +37,7 @@ public class RecipeMessageService {
             message.append("🔑 **Ингредиенты:**\n");
             for (RecipeIngredient recipeIngredient : recipe.getRecipeIngredients()) {
                 Ingredient ingredient = recipeIngredient.getIngredient();  // Получаем ингредиент
-                message.append(" - " + recipeIngredient.getAmount() + " " + ingredient.getName() + "\n");
+                message.append(" - "+ ingredient.getName() + "\n");
             }
         } else {
             message.append("🔑 **Ингредиенты не указаны**\n");
