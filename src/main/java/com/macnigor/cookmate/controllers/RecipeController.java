@@ -13,6 +13,7 @@ import com.macnigor.cookmate.dto.RecipeMatchDto;
 import com.macnigor.cookmate.services.RecipeMessageService;
 import com.macnigor.cookmate.services.RecipeService;
 import com.macnigor.cookmate.dto.RecipeMessageDto;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,18 +32,23 @@ public class RecipeController {
     }
 
     @PostMapping("/search")
-    public RecipeMessageDto search(@RequestBody List<String> ingredients) {
-        // Ищем рецепты по ингредиентам
+    public ResponseEntity<List<RecipeMessageDto>> search(@RequestBody List<String> ingredients) {
+        // 1. Ищем рецепты по ингредиентам
         List<RecipeMatchDto> matches = recipeService.searchByIngredients(ingredients);
 
+        // 2. Если рецептов нет
         if (matches.isEmpty()) {
-            return new RecipeMessageDto("❌ Рецепты не найдены по указанным ингредиентам.", null);
+            return ResponseEntity.noContent().build(); // 204 No Content
         }
 
-        // Берем лучший (первый) рецепт
-        RecipeMatchDto bestMatch = matches.get(0);
+        // 3. Берем топ-3 рецепта и формируем DTO
+        List<RecipeMessageDto> top3Dtos = matches.stream()
+                .limit(3)
+                .map(m -> recipeMessageService.createRecipeMessage(m.recipe().toEntity()))
+                .toList();
 
-        // Создаем сообщение для пользователя
-        return recipeMessageService.createRecipeMessage(bestMatch.recipe().toEntity());
+        // 4. Возвращаем список DTO
+        return ResponseEntity.ok(top3Dtos);
     }
+
 }

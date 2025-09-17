@@ -15,54 +15,62 @@ import com.macnigor.cookmate.dto.RecipeMessageDto;
 import com.macnigor.cookmate.entity.Ingredient;
 import com.macnigor.cookmate.entity.Recipe;
 import com.macnigor.cookmate.entity.RecipeIngredient;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 public class RecipeMessageService {
+
+    @Value("${images.folder}")
+    private String imagesFolder; // базовый URL для изображений, например "http://localhost:8080/images/"
 
     public RecipeMessageDto createRecipeMessage(Recipe recipe) {
         // Формируем строку рецепта
         StringBuilder message = new StringBuilder();
 
         // Название рецепта с эмодзи
-        message.append("🍽 **" + recipe.getTitle() + "**\n\n");
+        message.append("🍽 **").append(recipe.getTitle()).append("**\n\n");
 
         // Описание рецепта
         if (recipe.getDescription() != null && !recipe.getDescription().isEmpty()) {
-            message.append("📝 *" + recipe.getDescription() + "*\n\n");
+            message.append("📝 *").append(recipe.getDescription()).append("*\n\n");
         }
 
-        // Ингредиенты: проверяем, что список не пуст
+        // Ингредиенты
         if (recipe.getRecipeIngredients() != null && !recipe.getRecipeIngredients().isEmpty()) {
             message.append("🔑 **Ингредиенты:**\n");
             for (RecipeIngredient recipeIngredient : recipe.getRecipeIngredients()) {
-                Ingredient ingredient = recipeIngredient.getIngredient();  // Получаем ингредиент
-                message.append(" - "+ ingredient.getName() + "\n");
+                Ingredient ingredient = recipeIngredient.getIngredient();
+                message.append(" - ").append(ingredient.getName()).append("\n");
             }
         } else {
             message.append("🔑 **Ингредиенты не указаны**\n");
         }
 
-        // Инструкция: проверяем, что шаги не пустые
+        // Инструкция
         if (recipe.getInstructions() != null && !recipe.getInstructions().isEmpty()) {
             message.append("\n🚀 *Инструкция:*\n");
             for (String step : recipe.getInstructions()) {
-                message.append(" - " + step + "\n");
+                message.append(" - ").append(step).append("\n");
             }
         } else {
             message.append("\n🚀 *Инструкция не указана*\n");
         }
 
-        // Добавляем ссылку на изображение, если оно есть
+        // Формируем корректный URL изображения
+        String imageUrl = null;
         if (recipe.getImageUrl() != null && !recipe.getImageUrl().isEmpty()) {
-            message.append("\n🖼️ *Посмотреть изображение:* " + recipe.getImageUrl() + "\n");
+            // Получаем только имя файла из пути (кроссплатформенно)
+            String fileName = new java.io.File(recipe.getImageUrl()).getName();
+            imageUrl = imagesFolder + fileName;
+            message.append("\n🖼️ *Посмотреть изображение:* ").append(imageUrl).append("\n");
         } else {
             message.append("\n🖼️ *Изображение не доступно*\n");
         }
 
-        // Формируем DTO и возвращаем
-        return new RecipeMessageDto(message.toString(), recipe.getImageUrl());
+        // Возвращаем DTO
+        return new RecipeMessageDto(message.toString(), imageUrl);
     }
-
 }
+
 
