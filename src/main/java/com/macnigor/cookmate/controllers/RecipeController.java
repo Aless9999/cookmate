@@ -13,10 +13,7 @@ import com.macnigor.cookmate.dto.RecipeMatchDto;
 import com.macnigor.cookmate.services.RecipeMessageService;
 import com.macnigor.cookmate.services.RecipeService;
 import com.macnigor.cookmate.dto.RecipeMessageDto;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -33,8 +30,8 @@ public class RecipeController {
         this.recipeMessageService = recipeMessageService;
     }
 
-    @GetMapping("/search")
-    public RecipeMessageDto search(@RequestParam List<String> ingredients) {
+    @PostMapping("/search")
+    public RecipeMessageDto search(@RequestBody List<String> ingredients) {
         // Ищем рецепты по ингредиентам
         List<RecipeMatchDto> matches = recipeService.searchByIngredients(ingredients);
 

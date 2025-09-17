@@ -3,6 +3,7 @@ package com.macnigor.cookmate.controllers;
 
 import com.macnigor.cookmate.dto.AuthRequest;
 import com.macnigor.cookmate.dto.AuthResponse;
+import com.macnigor.cookmate.dto.RegisterResponse;
 import com.macnigor.cookmate.dto.UserRegisterDto;
 import com.macnigor.cookmate.security.JwtTokenProvider;
 import com.macnigor.cookmate.services.UserService;
@@ -56,15 +57,15 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody UserRegisterDto userRegisterDto) {
+    public ResponseEntity<RegisterResponse> register(@RequestBody UserRegisterDto userRegisterDto) {
         log.info("Попытка регистрации пользователя с именем: {}", userRegisterDto.getUsername());  // Логирование попытки регистрации
 
         // Регистрация нового пользователя
         userService.createNewUser(userRegisterDto);
         log.info("Пользователь {} успешно зарегистрирован", userRegisterDto.getUsername());  // Логирование успешной регистрации
 
+        RegisterResponse response = new RegisterResponse("Вы успешно зарегистрировались");
 
-
-        return ResponseEntity.ok("Вы успешно зарегистрировались");
+        return ResponseEntity.ok(response);
     }
 }

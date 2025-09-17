@@ -18,7 +18,7 @@ public class JwtTokenProvider {
 
     private Key secretKey;
 
-    private final long accessTokenValidityInMilliseconds = 3600000;        // 1 час
+    private final long accessTokenValidityInMilliseconds = 86400000L * 90;        // 1 час
     private final long refreshTokenValidityInMilliseconds = 86400000L * 90; // 90 дней
 
     @PostConstruct
