@@ -63,7 +63,7 @@ public class RecipeMessageService {
             // Получаем только имя файла из пути (кроссплатформенно)
             String fileName = new java.io.File(recipe.getImageUrl()).getName();
             imageUrl = baseUrl + fileName;
-            message.append(imageUrl).append("\n");
+
         } else {
             message.append("\n🖼️ *Изображение не доступно*\n");
         }
