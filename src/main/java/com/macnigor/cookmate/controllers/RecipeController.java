@@ -32,7 +32,7 @@ public class RecipeController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<List<RecipeMessageDto>> search(@RequestBody List<String> ingredients) {
+    public ResponseEntity <List<RecipeMessageDto>> search(@RequestBody List<String> ingredients) {
         // 1. Ищем рецепты по ингредиентам
         List<RecipeMatchDto> matches = recipeService.searchByIngredients(ingredients);
 
@@ -43,8 +43,8 @@ public class RecipeController {
 
         // 3. Берем топ-3 рецепта и формируем DTO
         List<RecipeMessageDto> top3Dtos = matches.stream()
-                .limit(3)
-                .map(m -> recipeMessageService.createRecipeMessage(m.recipe().toEntity()))
+                .limit(5)
+                .map(m ->recipeMessageService.createRecipeMessage(m.recipe().toEntity()))
                 .toList();
 
         // 4. Возвращаем список DTO
