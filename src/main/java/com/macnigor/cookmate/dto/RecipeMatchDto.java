@@ -10,8 +10,11 @@
 
 package com.macnigor.cookmate.dto;
 
+import java.util.List;
+
 public record RecipeMatchDto(
         RecipeDto recipe,
-        double score
+        long score,
+        List<Integer>amount
 ) {}
 

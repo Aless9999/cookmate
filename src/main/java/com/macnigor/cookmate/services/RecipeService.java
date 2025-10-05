@@ -12,12 +12,17 @@ package com.macnigor.cookmate.services;
 
 import com.macnigor.cookmate.dto.RecipeDto;
 import com.macnigor.cookmate.dto.RecipeMatchDto;
+import com.macnigor.cookmate.entity.Recipe;
+import com.macnigor.cookmate.entity.RecipeIngredient;
 import com.macnigor.cookmate.repositories.RecipeRepository;
+import com.macnigor.cookmate.utils.IngredientUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
+
+
 
 @Slf4j  // Добавляем аннотацию для логирования
 @Service
@@ -28,11 +33,21 @@ public class RecipeService {
         this.recipeRepository = recipeRepository;
     }
 
+    //Метод для получения рецептов из базы данных по ингридиентам пользователя
+    public List<Recipe> getRecipeWithIngredientsUserChoice(List<String> userChoiceIngredients) {
+
+        return recipeRepository.findRecipesWithIngredients(userChoiceIngredients);
+    }
+
+
+
+
+
     // Метод для поиска рецептов по ингредиентам
     public List<RecipeMatchDto> searchByIngredients(List<String> userIngredients) {
         log.debug("Начало поиска рецептов по ингредиентам. Пользовательские ингредиенты: {}", userIngredients);
 
-        // Нормализуем пользовательские ингредиенты (приводим к нижнему регистру и убираем пробелы)
+        // Нормализуем пользовательские ингредиенты (нижний регистр и убираем пробелы)
         List<String> normalized = userIngredients.stream()
                 .map(String::toLowerCase)
                 .map(String::trim)
@@ -40,36 +55,41 @@ public class RecipeService {
 
         log.debug("Нормализованные ингредиенты пользователя: {}", normalized);
 
-        // Получаем все рецепты из базы данных
-        List<RecipeMatchDto> matches = recipeRepository.findAll().stream()
+        // Формируем список совпадений
+        List<RecipeMatchDto> matches = getRecipeWithIngredientsUserChoice(normalized).stream()
                 .map(recipe -> {
-                    List<String> recipeIngredients = recipe.getRecipeIngredients().stream()
-
-                            .map(ri -> ri.getIngredient().getName().toLowerCase())
+                    // Получаем только совпадающие ингредиенты с пользовательскими
+                    List<RecipeIngredient> matchedIngredients = recipe.getRecipeIngredients().stream()
+                            .filter(ri -> normalized.contains(ri.getIngredient().getName().toLowerCase()))
                             .toList();
 
-                    log.debug("Рецепт {}: найдено {} ингредиентов.", recipe.getTitle(), recipeIngredients.size());
+                    long score = matchedIngredients.size(); // количество совпадений
 
-                    // Считаем количество совпадений между ингредиентами рецепта и пользовательскими
-                    long matchCount = recipeIngredients.stream()
-                            .filter(normalized::contains)
+                    // Конвертируем количество совпавших ингредиентов в базовую единицу (г, мл и т.п.)
+                    List<Integer> amounts = matchedIngredients.stream()
+                            .map(ri -> IngredientUtils.parseAndConvertAmount(ri.getAmount()))
+                            .toList();
 
-                            .count();
-
-                    log.debug("Рецепт {}: совпадений с ингредиентами пользователя: {}", recipe.getTitle(), matchCount);
-
-                    // Рассчитываем рейтинг (score) рецепта
-                    double score = (double) matchCount / recipeIngredients.size();
-
-                    log.debug("Рецепт {}: рейтинг (score) = {}", recipe.getTitle(), score);
-
-                    return new RecipeMatchDto(RecipeDto.fromEntity(recipe), score);
+                    return new RecipeMatchDto(RecipeDto.fromEntity(recipe), score, amounts);
                 })
-                .sorted(Comparator.comparingDouble(RecipeMatchDto::score).reversed()) // Сортируем по убыванию рейтинга
+                // Сортировка
+                .sorted(
+                        Comparator.comparingLong(RecipeMatchDto::score).reversed() // сначала по количеству совпадений
+                                .thenComparing(
+                                        (r1, r2) -> {
+                                            // вторичная сортировка по максимальной массе совпавших ингредиентов
+                                            int max1 = r1.amount().stream().max(Integer::compareTo).orElse(0);
+                                            int max2 = r2.amount().stream().max(Integer::compareTo).orElse(0);
+                                            return Integer.compare(max2, max1); // большее количество вверх
+                                        }
+                                )
+                )
                 .toList();
 
         log.debug("Поиск завершен. Найдено {} совпадений.", matches.size());
-
         return matches;
     }
+
+
+
 }
