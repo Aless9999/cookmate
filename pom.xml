@@ -5,12 +5,12 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.5</version>
+        <version>3.5.7</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.macnigor</groupId>
     <artifactId>cookmate</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.1.1</version>
     <name>CookMate</name>
     <description>CookMate — server platform for storing and searching recipes by ingredients with</description>
     <url/>
@@ -30,6 +30,9 @@
         <java.version>17</java.version>
     </properties>
     <dependencies>
+
+
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>

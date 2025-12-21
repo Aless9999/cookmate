@@ -10,13 +10,15 @@
 
 package com.macnigor.cookmate.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
-@Setter
-@Getter
-public class UserRegisterDto {
-    private String username;
-    private String password;
-    private String email;
+
+public record UserRegisterDto (@NotBlank String username,
+                               @NotBlank String password,
+                               @NotBlank @Email String email){
+
+
 }
+
+

@@ -11,7 +11,6 @@
 package com.macnigor.cookmate.services;
 import com.macnigor.cookmate.dto.UserRegisterDto;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 
@@ -29,11 +28,10 @@ public class AddUserOnStartup implements CommandLineRunner {
     public void run(String... args) throws Exception {
         String username = "admin";
         String password = "100";
+        String email = "asd@mail.com";
         String encryptedPassword = passwordEncoder.encode(password);
-        UserRegisterDto userRegisterDto = new UserRegisterDto();
-        userRegisterDto.setUsername(username);
-        userRegisterDto.setEmail("asd@mail.com");
-        userRegisterDto.setPassword(password);
+        UserRegisterDto userRegisterDto = new UserRegisterDto(username,password,email);
+
         userService.createNewUser(userRegisterDto);
         // Здесь нужно внедрить репозиторий для сохранения пользователя в БД
         // Пример для добавления пользователя:

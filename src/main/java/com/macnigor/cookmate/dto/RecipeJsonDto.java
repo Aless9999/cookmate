@@ -12,13 +12,16 @@ package com.macnigor.cookmate.dto;
 
 import java.util.List;
 
-
-public record RecipeDto(
-        Long id,
+public record RecipeJsonDto(
         String title,
         String description,
         List<String> instructions,
         String imageUrl,
-        List<String> ingredients
+        List<IngredientDto> ingredients
 ) {
+    public RecipeJsonDto {
+        instructions = instructions == null ? List.of() : List.copyOf(instructions);
+        ingredients = ingredients == null ? List.of() : List.copyOf(ingredients);
+    }
 }
+

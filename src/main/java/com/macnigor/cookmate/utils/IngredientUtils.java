@@ -38,17 +38,26 @@ public class IngredientUtils {
             case "г" -> number;           // граммы оставляем
             case "л" -> number * 1000;    // литры -> мл
             case "мл" -> number;          // миллилитры оставляем
-            case "ст.л." -> number * 15;  // столовые ложки -> мл
+            case "стл" -> number * 15;  // столовые ложки -> мл
             default -> number;            // неизвестная единица
         };
     }
 
 
     // Метод extractUnit
-    private static String extractUnit(String amount) {
-        if (amount == null) return "";
-        return amount.replaceAll("[0-9]", "").trim();
+    public static String extractUnit(String amount) {
+        if (amount == null || amount.isBlank()) return "";
+
+        // Убираем цифры
+        String unit = amount.replaceAll("[0-9]", "").trim();
+
+        // Убираем точки и лишние пробелы
+        unit = unit.replaceAll("\\.", "").replaceAll("\\s+", "");
+
+        // Например, "ст. л." -> "стл"
+        return unit.toLowerCase();  // приводим к нижнему регистру для удобства
     }
+
 
 }
 

@@ -10,7 +10,6 @@
 
 package com.macnigor.cookmate.repositories;
 
-import com.macnigor.cookmate.dto.IngredientDTO;
 import com.macnigor.cookmate.entity.Ingredient;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

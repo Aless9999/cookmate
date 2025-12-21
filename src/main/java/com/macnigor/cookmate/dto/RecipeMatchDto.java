@@ -15,6 +15,7 @@ import java.util.List;
 public record RecipeMatchDto(
         RecipeDto recipe,
         long score,
-        List<Integer>amount
-) {}
+        List<Integer> amount
+) {
+}
 

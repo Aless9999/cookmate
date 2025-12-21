@@ -14,6 +14,7 @@ import com.macnigor.cookmate.dto.RecipeDto;
 import com.macnigor.cookmate.dto.RecipeMatchDto;
 import com.macnigor.cookmate.entity.Recipe;
 import com.macnigor.cookmate.entity.RecipeIngredient;
+import com.macnigor.cookmate.mapper.RecipeMapper;
 import com.macnigor.cookmate.repositories.RecipeRepository;
 import com.macnigor.cookmate.utils.IngredientUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -24,13 +25,16 @@ import java.util.List;
 
 
 
-@Slf4j  // Добавляем аннотацию для логирования
+@Slf4j
 @Service
 public class RecipeService {
     private final RecipeRepository recipeRepository;
+    private final RecipeMapper recipeMapper;
 
-    public RecipeService(RecipeRepository recipeRepository) {
+
+    public RecipeService(RecipeRepository recipeRepository, RecipeMapper recipeMapper) {
         this.recipeRepository = recipeRepository;
+        this.recipeMapper = recipeMapper;
     }
 
     //Метод для получения рецептов из базы данных по ингридиентам пользователя
@@ -70,7 +74,7 @@ public class RecipeService {
                             .map(ri -> IngredientUtils.parseAndConvertAmount(ri.getAmount()))
                             .toList();
 
-                    return new RecipeMatchDto(RecipeDto.fromEntity(recipe), score, amounts);
+                    return new RecipeMatchDto(recipeMapper.fromEntity(recipe), score, amounts);
                 })
                 // Сортировка
                 .sorted(

@@ -10,13 +10,5 @@
 
 package com.macnigor.cookmate.dto;
 
-import lombok.Getter;
-import lombok.Setter;
 
-@Setter
-@Getter
-public class AuthRequest {
-    private String username;
-    private String password;
-    private String accessToken;
-}
+public record AuthRequest (String username, String password,String accessToken){}

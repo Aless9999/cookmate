@@ -10,16 +10,5 @@
 
 package com.macnigor.cookmate.dto;
 
-import lombok.Getter;
-import lombok.Setter;
 
-@Setter
-@Getter
-public class AuthResponse {
-    private String accessToken;
-
-    public AuthResponse(String accessToken) {
-this.accessToken = accessToken;
-    }
-
-}
+public record AuthResponse (String accessToken){}

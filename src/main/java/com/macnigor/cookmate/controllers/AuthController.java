@@ -5,64 +5,69 @@ import com.macnigor.cookmate.dto.AuthRequest;
 import com.macnigor.cookmate.dto.AuthResponse;
 import com.macnigor.cookmate.dto.RegisterResponse;
 import com.macnigor.cookmate.dto.UserRegisterDto;
-import com.macnigor.cookmate.security.JwtTokenProvider;
+import com.macnigor.cookmate.security.JwtTokenFactory;
 import com.macnigor.cookmate.services.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Slf4j  // Аннотация для логирования
+@Slf4j
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenFactory jwtTokenFactory;
 
-    public AuthController(UserService userService, AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider) {
+    public AuthController(UserService userService, AuthenticationManager authenticationManager, JwtTokenFactory jwtTokenFactory) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
-        this.jwtTokenProvider = jwtTokenProvider;
+        this.jwtTokenFactory = jwtTokenFactory;
     }
+
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
-        log.info("Попытка входа пользователя с именем: {}", request.getUsername());  // Логирование входа
-
-        // 1. Аутентифицируем пользователя
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
-        );
-
-        if (authentication.isAuthenticated()) {
-            log.info("Пользователь {} успешно аутентифицирован", request.getUsername());  // Логирование успешной аутентификации
-        } else {
-            log.warn("Не удалось аутентифицировать пользователя {}", request.getUsername());  // Логирование неудачной аутентификации
+        if (request == null || request.username() == null || request.username().isBlank()
+                || request.password() == null || request.password().isBlank()) {
+            log.warn("Неверный запрос для аутентификации");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
-        // Создание токена
-        String token = jwtTokenProvider.createAccessToken(request.getUsername());
-        AuthResponse response = new AuthResponse(token);
+        log.info("Попытка входа пользователя с именем: {}", request.username());
 
-        log.info("Токен доступа для пользователя {} успешно сгенерирован", request.getUsername());  // Логирование генерации токена
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.username(), request.password()));
 
-        return ResponseEntity.ok(response);
+            String token = jwtTokenFactory.createAccessToken(request.username());
+            AuthResponse response;
+            response = new AuthResponse(token);
+            log.info("Пользователь {} успешно аутентифицирован и токен сгенерирован", request.username());
+            return ResponseEntity.ok(response);
+
+        } catch (AuthenticationException ex) {
+            log.warn("Аутентификация не прошла для пользователя {}: {}", request.username(), ex.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
     }
 
     @PostMapping("/register")
     public ResponseEntity<RegisterResponse> register(@RequestBody UserRegisterDto userRegisterDto) {
-        log.info("Попытка регистрации пользователя с именем: {}", userRegisterDto.getUsername());  // Логирование попытки регистрации
+        log.info("Попытка регистрации пользователя с именем: {}", userRegisterDto.username());
 
         // Регистрация нового пользователя
         userService.createNewUser(userRegisterDto);
-        log.info("Пользователь {} успешно зарегистрирован", userRegisterDto.getUsername());  // Логирование успешной регистрации
+        log.info("Пользователь {} успешно зарегистрирован", userRegisterDto.username());
 
         RegisterResponse response = new RegisterResponse("Вы успешно зарегистрировались");
 

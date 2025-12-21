@@ -10,15 +10,7 @@
 
 package com.macnigor.cookmate.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+public record RegisterResponse(
+        String message
+) {}
 
-@Setter
-@Getter
-public class RegisterResponse {
-    private String message;
-
-    public RegisterResponse(String message) {
-        this.message = message;
-    }
-}

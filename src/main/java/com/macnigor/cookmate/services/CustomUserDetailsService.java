@@ -22,9 +22,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+
 @Slf4j
-@Getter
-@Setter
 @Component
 public class CustomUserDetailsService implements UserDetailsService {
 
@@ -35,26 +34,20 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        log.info("Loading user by username: {}", username);
+    public UserDetails loadUserByUsername(String username)
+            throws UsernameNotFoundException {
 
-        try {
-            User user = userRepository.findUserByUsername(username)
-                    .orElseThrow(() -> new UsernameNotFoundException("Username " + username + " not found"));
+        log.debug("Loading user by username: {}", username);
 
-            log.info("User {} loaded successfully", user.getUsername());
+        User user = userRepository.findUserByUsername(username)
+                .orElseThrow(() ->
+                        new UsernameNotFoundException(
+                                "Username '" + username + "' not found"));
 
-            return new org.springframework.security.core.userdetails.User(
-                    user.getUsername(),
-                    user.getPassword(),
-                    new ArrayList<>());
-
-        } catch (DataAccessException e) {
-            log.error("Database access error while loading user by username: {}", username, e);
-            throw new RuntimeException("Error accessing user data", e); // или другое подходящее исключение
-        } catch (Exception e) {
-            log.error("Unexpected error while loading user by username: {}", username, e);
-            throw new RuntimeException("Unexpected error occurred", e);
-        }
+        return org.springframework.security.core.userdetails.User
+                .withUsername(user.getUsername())
+                .password(user.getPassword())
+                .authorities("ROLE_USER") // TODO load roles from DB
+                .build();
     }
 }

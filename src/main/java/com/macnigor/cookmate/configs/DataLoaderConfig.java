@@ -13,17 +13,16 @@ package com.macnigor.cookmate.configs;
 import com.macnigor.cookmate.services.AppStateService;
 import com.macnigor.cookmate.services.RecipeImportService;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
+//Этот класс загружает рецепты из файла json в базу данных
 @Configuration
 @Setter
 @Getter
-@Slf4j // Ломбок генерирует логгер для данного класса
+@Slf4j
 public class DataLoaderConfig {
 
     private final RecipeImportService recipeImportService;

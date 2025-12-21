@@ -12,8 +12,8 @@ package com.macnigor.cookmate.services;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.macnigor.cookmate.dto.IngredientDTO;
-import com.macnigor.cookmate.dto.RecipeJsonDTO;
+import com.macnigor.cookmate.dto.IngredientDto;
+import com.macnigor.cookmate.dto.RecipeJsonDto;
 import com.macnigor.cookmate.entity.Ingredient;
 import com.macnigor.cookmate.entity.Recipe;
 import com.macnigor.cookmate.entity.RecipeIngredient;
@@ -22,11 +22,9 @@ import com.macnigor.cookmate.repositories.RecipeIngredientRepository;
 import com.macnigor.cookmate.repositories.RecipeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 @Component
 @RequiredArgsConstructor
@@ -41,25 +39,25 @@ public class RecipeImportService {
     public void importRecipesFromJson() {
         try {
             InputStream inputStream = getClass().getResourceAsStream("/recipes.json");
-            List<RecipeJsonDTO> recipeDtos = objectMapper.readValue(inputStream, new TypeReference<>() {});
+            List<RecipeJsonDto> recipeDtos = objectMapper.readValue(inputStream, new TypeReference<>() {});
 
-            for (RecipeJsonDTO dto : recipeDtos) {
+            for (RecipeJsonDto dto : recipeDtos) {
                 // Создаём рецепт
                 Recipe recipe = new Recipe();
-                recipe.setTitle(dto.getTitle());
-                recipe.setDescription(dto.getDescription());
-                recipe.setInstructions(dto.getInstructions());
-                recipe.setImageUrl(dto.getImageUrl());
+                recipe.setTitle(dto.title());
+                recipe.setDescription(dto.description());
+                recipe.setInstructions(dto.instructions());
+                recipe.setImageUrl(dto.imageUrl());
 
                 recipeRepository.save(recipe); // Сохраняем сначала, чтобы получить ID для связи
 
                 // Обрабатываем ингредиенты
-                for (IngredientDTO ingredientDTO : dto.getIngredients()) {
+                for (IngredientDto ingredientDTO : dto.ingredients()) {
                     // Ищем ингредиент по имени или создаём новый
-                    Ingredient ingredient = ingredientRepository.findByName(ingredientDTO.getName())
+                    Ingredient ingredient = ingredientRepository.findByName(ingredientDTO.name())
                             .orElseGet(() -> {
                                 Ingredient newIng = new Ingredient();
-                                newIng.setName(ingredientDTO.getName());
+                                newIng.setName(ingredientDTO.name());
                                 return ingredientRepository.save(newIng);
                             });
 
@@ -67,7 +65,7 @@ public class RecipeImportService {
                     RecipeIngredient recipeIngredient = new RecipeIngredient();
                     recipeIngredient.setRecipe(recipe);
                     recipeIngredient.setIngredient(ingredient);
-                    recipeIngredient.setAmount(ingredientDTO.getAmount()); // "300 г", "1 шт."
+                    recipeIngredient.setAmount(ingredientDTO.amount()); // "300 г", "1 шт."
                     recipeIngredientRepository.save(recipeIngredient);
                 }
             }

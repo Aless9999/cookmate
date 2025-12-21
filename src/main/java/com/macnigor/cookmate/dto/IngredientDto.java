@@ -10,12 +10,6 @@
 
 package com.macnigor.cookmate.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+public record IngredientDto(String name, String amount){
+    }
 
-@Getter
-@Setter
-public class UserLoginDto {
-    private String username;
-    private String password;
-}

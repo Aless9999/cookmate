@@ -1,6 +1,6 @@
 package com.macnigor.cookmate.configs;
 
-import com.macnigor.cookmate.security.JwtAuthFilter;
+import com.macnigor.cookmate.security.JwtTokenFilter;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -23,11 +23,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Setter
 public class SecurityConfig {
 
-    private final JwtAuthFilter jwtAuthFilter;
+    private final JwtTokenFilter jwtTokenFilter;
 
-    public SecurityConfig(JwtAuthFilter jwtAuthFilter) {
-        this.jwtAuthFilter = jwtAuthFilter;
+    public SecurityConfig(JwtTokenFilter jwtTokenFilter) {
+        this.jwtTokenFilter = jwtTokenFilter;
     }
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -43,7 +44,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // REST API без сессий
                 )
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class); // Добавляем фильтр JWT
+                .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class); // Добавляем фильтр JWT
 
         log.info("HTTP security settings successfully configured.");
         return http.build();

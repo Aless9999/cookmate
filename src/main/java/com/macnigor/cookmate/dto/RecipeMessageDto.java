@@ -10,17 +10,8 @@
 
 package com.macnigor.cookmate.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+public record RecipeMessageDto(
+        String message,
+        String imageUrl
+) {}
 
-@Setter
-@Getter
-public class RecipeMessageDto {
-  private  String message; // сообщение которое получает клиент
-    private String imageUrl; // ссылка на изображение
-
-    public RecipeMessageDto(String message, String imageUrl) {
-        this.message = message;
-        this.imageUrl = imageUrl;
-    }
-}
