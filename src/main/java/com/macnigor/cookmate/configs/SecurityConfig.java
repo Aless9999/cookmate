@@ -10,6 +10,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -37,8 +38,10 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())  // Отключаем CSRF для REST API
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/h2-console/**").permitAll() // Открыть H2 Console только в dev
-                        .requestMatchers("/auth/**").permitAll()  // Доступ ко всем для /
+                        .requestMatchers("/h2-console/**").permitAll()
+                        .requestMatchers("/ImageCook/**").permitAll()
+                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/error").permitAll()
                         .anyRequest().authenticated()  // Все остальные страницы требуют аутентификации
                 )
                 .sessionManagement(session -> session
@@ -64,4 +67,6 @@ public class SecurityConfig {
         log.info("Creating BCryptPasswordEncoder...");
         return new BCryptPasswordEncoder();
     }
+
+
 }

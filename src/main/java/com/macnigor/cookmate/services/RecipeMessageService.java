@@ -59,6 +59,7 @@ package com.macnigor.cookmate.services;
 
             // Формируем корректный URL изображения
             String imageUrl = null;
+            System.out.println("DEBUG: Raw URL from DB: '" + recipe.getImageUrl() + "'");
             if (recipe.getImageUrl() != null && !recipe.getImageUrl().isEmpty()) {
                 // Получаем только имя файла из пути (кроссплатформенно)
                 String fileName = new java.io.File(recipe.getImageUrl()).getName();

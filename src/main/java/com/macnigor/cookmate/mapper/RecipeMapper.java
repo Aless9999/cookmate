@@ -15,10 +15,12 @@ import com.macnigor.cookmate.entity.Ingredient;
 import com.macnigor.cookmate.entity.Recipe;
 import com.macnigor.cookmate.entity.RecipeIngredient;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Slf4j
+@Component
 public class RecipeMapper {
 
     public static RecipeDto fromEntity(Recipe recipe) {
@@ -55,7 +57,7 @@ public class RecipeMapper {
         recipe.setTitle(recipeDto.title());
         recipe.setDescription(recipeDto.description());
         recipe.setInstructions(recipeDto.instructions());
-        recipe.setImageUrl(recipe.getImageUrl());
+        recipe.setImageUrl(recipeDto.imageUrl());
 
         List<RecipeIngredient> recipeIngredients = recipeDto.ingredients().stream()
                 .map(name -> {

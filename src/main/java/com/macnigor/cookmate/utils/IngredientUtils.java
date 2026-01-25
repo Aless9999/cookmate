@@ -9,7 +9,7 @@
  */
 
 package com.macnigor.cookmate.utils;
-
+//Преобразует народные еденицы измерения в классические
 public class IngredientUtils {
 
 
@@ -23,10 +23,9 @@ public class IngredientUtils {
         int number = Integer.parseInt(numberStr);
 
         // 2. Конвертируем по единице измерения
-        int converted = convertAmount(amount, number);
 
         // 3. Возвращаем результат
-        return converted;
+        return convertAmount(amount, number);
     }
 
     // Метод convertAmount (из предыдущего примера)
@@ -44,8 +43,8 @@ public class IngredientUtils {
     }
 
 
-    // Метод extractUnit
-    public static String extractUnit(String amount) {
+
+    private static String extractUnit(String amount) {
         if (amount == null || amount.isBlank()) return "";
 
         // Убираем цифры

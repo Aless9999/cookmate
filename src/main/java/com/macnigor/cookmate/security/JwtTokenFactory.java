@@ -21,14 +21,19 @@ import java.util.Date;
 @Component
 public class JwtTokenFactory {
 
+
+
+
     private static final long ACCESS_TOKEN_TTL = 60 * 60 * 1000L; // 1 час
     private static final String TOKEN_TYPE = "token_type";
     private static final String ACCESS = "access";
 
     private final Key secretKey;
 
+
     public JwtTokenFactory(@Value("${jwt.secret}") String secret) {
         this.secretKey = Keys.hmacShaKeyFor(Base64.getDecoder().decode(secret));
+
     }
 
     public String createAccessToken(String username) {

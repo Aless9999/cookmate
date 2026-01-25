@@ -43,8 +43,4 @@ CREATE TABLE recipe_ingredients (
     CONSTRAINT uq_recipe_ingredient UNIQUE (recipe_id, ingredient_id)  -- Уникальное сочетание рецепта и ингредиента
 );
 
--- Таблица состояния
-CREATE TABLE application_state (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    is_data_loaded BOOLEAN NOT NULL
-);
+

@@ -15,6 +15,7 @@ import com.macnigor.cookmate.repositories.UserRepository;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -25,6 +26,7 @@ import java.util.ArrayList;
 
 @Slf4j
 @Component
+@Lazy
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
