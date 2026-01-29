@@ -9,11 +9,9 @@
 
 package com.macnigor.cookmate.controllers;
 
-import com.macnigor.cookmate.dto.RecipeMatchDto;
-import com.macnigor.cookmate.mapper.RecipeMapper;
-import com.macnigor.cookmate.services.RecipeMessageService;
-import com.macnigor.cookmate.services.RecipeService;
+import com.macnigor.cookmate.facade.RecipeSearchFacade;
 import com.macnigor.cookmate.dto.RecipeMessageDto;
+import jakarta.validation.constraints.NotEmpty;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,32 +21,24 @@ import java.util.List;
 @RequestMapping("/api/recipes")
 public class RecipeController {
 
-    private final RecipeService recipeService;
-    private final RecipeMessageService recipeMessageService;
+    private final RecipeSearchFacade searchFacade;
 
-    public RecipeController(RecipeService recipeService, RecipeMessageService recipeMessageService) {
-        this.recipeService = recipeService;
-        this.recipeMessageService = recipeMessageService;
+    public RecipeController(RecipeSearchFacade searchFacade) {
+        this.searchFacade = searchFacade;
     }
 
 
     @PostMapping("/search")
-    public ResponseEntity <List<RecipeMessageDto>> search(@RequestBody List<String> ingredients) {
-        // 1. Ищем рецепты по ингредиентам
-        List<RecipeMatchDto> matches = recipeService.searchByIngredients(ingredients);
+    public ResponseEntity <List<RecipeMessageDto>> searchRecipes(@RequestBody @NotEmpty(
+            message = "Список ингредиентов не может быть пустым")
+             List<String> ingredients) {
+        List<RecipeMessageDto> topRecipe = searchFacade.searchAndCreateStringMessage(ingredients);
 
-        // 2. Если рецептов нет
-        if (matches.isEmpty()) {
-            return ResponseEntity.noContent().build(); // 204 No Content
+
+         return topRecipe.isEmpty()?
+                    ResponseEntity.noContent().build():
+                    ResponseEntity.ok(topRecipe);
         }
-
-        // 3. Берем топ рецепт и формируем DTO
-        List<RecipeMessageDto> topDtos = matches.stream()
-                .map(m ->recipeMessageService.createRecipeMessage(RecipeMapper.toEntity(m.recipe())))
-                .toList();
-
-        // 4. Возвращаем список DTO
-        return ResponseEntity.ok(topDtos);
     }
 
-}
+

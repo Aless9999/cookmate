@@ -11,10 +11,8 @@
 package com.macnigor.cookmate.services;
 
     // RecipeMessageService.java — сервис для формирования сообщения
+    import com.macnigor.cookmate.projection.RecipeView;
     import com.macnigor.cookmate.dto.RecipeMessageDto;
-    import com.macnigor.cookmate.entity.Ingredient;
-    import com.macnigor.cookmate.entity.Recipe;
-    import com.macnigor.cookmate.entity.RecipeIngredient;
     import org.springframework.beans.factory.annotation.Value;
     import org.springframework.stereotype.Service;
 
@@ -24,7 +22,7 @@ package com.macnigor.cookmate.services;
         @Value("${base.url}")
         private String baseUrl; // Базовый URL для изображений
 
-        public RecipeMessageDto createRecipeMessage(Recipe recipe) {
+        public RecipeMessageDto createRecipeMessage(RecipeView recipe) {
             // Формируем строку рецепта
             StringBuilder message = new StringBuilder();
 
@@ -37,11 +35,11 @@ package com.macnigor.cookmate.services;
             }
 
             // Ингредиенты
-            if (recipe.getRecipeIngredients() != null && !recipe.getRecipeIngredients().isEmpty()) {
+            if (recipe.getIngredientsList() != null && !recipe.getIngredientsList().isEmpty()) {
                 message.append("🔑 **Ингредиенты:**\n");
-                for (RecipeIngredient recipeIngredient : recipe.getRecipeIngredients()) {
-                    Ingredient ingredient = recipeIngredient.getIngredient();
-                    message.append(" - ").append(ingredient.getName()).append("\n");
+                for (String recipeIngredient : recipe.getIngredientsList()) {
+
+                    message.append(" - ").append(recipeIngredient).append("\n");
                 }
             } else {
                 message.append("🔑 **Ингредиенты не указаны**\n");
