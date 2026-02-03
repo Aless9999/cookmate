@@ -11,21 +11,23 @@
 package com.macnigor.cookmate.repositories;
 
 import com.macnigor.cookmate.entity.Recipe;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+
+import org.springframework.data.jdbc.repository.query.Query;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Controller
-public interface RecipeRepository extends JpaRepository<Recipe,Long> {
+@Repository
+public interface RecipeRepository extends CrudRepository<Recipe, Long> {
 
-    @Query("SELECT DISTINCT r FROM Recipe r " +
-            "JOIN r.recipeIngredients ri " +
-            "JOIN ri.ingredient i " +
-            "WHERE LOWER(i.name) IN :ingredients " +
-            "ORDER BY r.title ASC")
+    @Query("""
+        SELECT DISTINCT r.* FROM recipes r
+        JOIN recipe_ingredients ri ON r.id = ri.recipe_id
+        JOIN ingredients i ON ri.ingredient_id = i.id
+        WHERE LOWER(i.name) IN (:ingredients)
+        ORDER BY r.title ASC
+    """)
     List<Recipe> findRecipesWithIngredients(@Param("ingredients") List<String> ingredients);
-
 }

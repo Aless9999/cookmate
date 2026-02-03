@@ -11,13 +11,13 @@
 package com.macnigor.cookmate.repositories;
 
 import com.macnigor.cookmate.entity.User;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<User,Long> {
+public interface UserRepository extends ListCrudRepository<User,Long> {
     Optional<User> findUserByUsername(String username);
 
     boolean existsByUsername(String username);

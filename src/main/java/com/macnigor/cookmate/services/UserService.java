@@ -13,11 +13,12 @@ package com.macnigor.cookmate.services;
 import com.macnigor.cookmate.dto.UserRegisterDto;
 import com.macnigor.cookmate.entity.User;
 import com.macnigor.cookmate.repositories.UserRepository;
-import jakarta.transaction.Transactional;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -55,15 +56,16 @@ public class UserService {
             }
 
             // Создание нового пользователя
-            User newUser = new User();
-            newUser.setUsername(userRegisterDto.username());
-            newUser.setPassword(passwordEncoder.encode(userRegisterDto.password()));
-            newUser.setEmail(userRegisterDto.email());
+            User newUser = new User(null,
+                    userRegisterDto.username(),
+                    passwordEncoder.encode(userRegisterDto.password()),
+                            userRegisterDto.email());
+
 
             // Сохраняем в базе
             userRepository.save(newUser);
 
-            log.info("Пользователь '{}' успешно зарегистрирован", newUser.getUsername());
+            log.info("Пользователь '{}' успешно зарегистрирован", newUser.username());
 
             return newUser;
         } catch (DataAccessException e) {

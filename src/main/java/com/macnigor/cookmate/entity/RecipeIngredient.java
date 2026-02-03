@@ -10,28 +10,19 @@
 
 package com.macnigor.cookmate.entity;
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
 
-@Entity
-@Table(name = "recipe_ingredients")
-@Getter
-@Setter
-public class RecipeIngredient {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Table;
 
-    @ManyToOne
-    @JoinColumn(name = "recipe_id", nullable = false)
-    private Recipe recipe;
 
-    @ManyToOne
-    @JoinColumn(name = "ingredient_id", nullable = false)
-    private Ingredient ingredient;
+@Table("recipe_ingredients")
+public record RecipeIngredient(
+        @Id Long id,
+        Long ingredientId,
+        String amount
+) {}
 
-    private String amount;   // количество и единица измерения  "100 гр"
 
-}
+
+
 

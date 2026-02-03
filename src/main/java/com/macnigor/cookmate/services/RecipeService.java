@@ -12,8 +12,10 @@ package com.macnigor.cookmate.services;
 
 import com.macnigor.cookmate.dto.RecipeDto;
 import com.macnigor.cookmate.dto.RecipeMatchDto;
+import com.macnigor.cookmate.entity.Ingredient;
 import com.macnigor.cookmate.entity.Recipe;
 import com.macnigor.cookmate.entity.RecipeIngredient;
+import com.macnigor.cookmate.repositories.IngredientRepository;
 import com.macnigor.cookmate.repositories.RecipeRepository;
 import com.macnigor.cookmate.utils.IngredientUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -21,17 +23,22 @@ import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
-
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 
 @Slf4j
 @Service
 public class RecipeService {
     private final RecipeRepository recipeRepository;
+private final IngredientRepository ingredientRepository;
 
-
-    public RecipeService(RecipeRepository recipeRepository) {
+    public RecipeService(RecipeRepository recipeRepository, IngredientRepository ingredientRepository) {
         this.recipeRepository = recipeRepository;
+        this.ingredientRepository = ingredientRepository;
     }
 
 
@@ -51,7 +58,7 @@ public class RecipeService {
                 // Сортировка: сначала по проценту покрытия (кто ближе к 100%), затем по количеству совпадений
                 .sorted(Comparator.comparingDouble(RecipeMatchDto::coveragePercent).reversed()
                         .thenComparingLong(RecipeMatchDto::matchCount).reversed())
-                .toList();
+                .collect(Collectors.toList());
 
         log.debug("Найдено {} рецептов после фильтрации.", results.size());
         return results;
@@ -69,12 +76,24 @@ public class RecipeService {
 
 
     private RecipeMatchDto createMatchDto(Recipe recipe, List<String> userIngredients) {
-        List<RecipeIngredient> recipeIngredients = recipe.getRecipeIngredients();
+        Set<RecipeIngredient> recipeIngredients = recipe.ingredients();
 
-        // Находим совпадения
+
+        Map<Long, Ingredient> ingredientMap = StreamSupport.stream(
+                ingredientRepository.findAllById(
+                        recipeIngredients.stream()
+                                .map(RecipeIngredient::ingredientId)
+                                .toList()
+                ).spliterator(), false
+        ).collect(Collectors.toMap(Ingredient::id, Function.identity()));
+
         List<RecipeIngredient> matched = recipeIngredients.stream()
-                .filter(ri -> userIngredients.contains(ri.getIngredient().getName().toLowerCase()))
+                .filter(ri -> {
+                    Ingredient ing = ingredientMap.get(ri.ingredientId());
+                    return ing != null && userIngredients.contains(ing.name().toLowerCase());
+                })
                 .toList();
+
 
         long matchCount = matched.size();
         int totalIngredients = recipeIngredients.size();
@@ -84,11 +103,11 @@ public class RecipeService {
 
         // Конвертируем веса (твоя логика сохранена)
         List<Integer> amounts = matched.stream()
-                .map(ri -> IngredientUtils.parseAndConvertAmount(ri.getAmount()))
+                .map(ri -> IngredientUtils.parseAndConvertAmount(ri.amount()))
                 .toList();
 
         return new RecipeMatchDto(
-                RecipeDto.fromEntity(recipe),
+                RecipeDto.fromEntity(recipe,ingredientMap),
                 matchCount,
                 coverage,
                 amounts

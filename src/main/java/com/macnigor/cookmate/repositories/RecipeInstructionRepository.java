@@ -10,15 +10,10 @@
 
 package com.macnigor.cookmate.repositories;
 
-import com.macnigor.cookmate.entity.Ingredient;
-
+import com.macnigor.cookmate.entity.RecipeInstructions;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
-
 @Repository
-public interface IngredientRepository extends CrudRepository<Ingredient, Long> {
-    Optional<Ingredient> findByName(String name);
+public interface RecipeInstructionRepository extends CrudRepository<RecipeInstructions,Long> {
 }
-

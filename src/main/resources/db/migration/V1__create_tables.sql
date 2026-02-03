@@ -7,7 +7,7 @@
 CREATE TABLE users (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(255) UNIQUE NOT NULL,
-    email VARCHAR(320) UNIQUE NOT NULL,  -- Для email можно использовать длину 320
+    email VARCHAR(320) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL
 );
 
@@ -22,13 +22,16 @@ CREATE TABLE recipes (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     description VARCHAR(2000),
+
     image_url VARCHAR(512)
 );
 
 -- Таблица шагов приготовления (instructions)
 CREATE TABLE recipe_instructions (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
     recipe_id BIGINT NOT NULL,
     instruction VARCHAR(2000),
+    instruction_order INTEGER,
     CONSTRAINT fk_recipe_instruction FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE
 );
 

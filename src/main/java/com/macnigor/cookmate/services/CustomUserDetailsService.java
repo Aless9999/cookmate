@@ -12,17 +12,12 @@ package com.macnigor.cookmate.services;
 
 import com.macnigor.cookmate.entity.User;
 import com.macnigor.cookmate.repositories.UserRepository;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.dao.DataAccessException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
 
 @Slf4j
 @Component
@@ -47,8 +42,8 @@ public class CustomUserDetailsService implements UserDetailsService {
                                 "Username '" + username + "' not found"));
 
         return org.springframework.security.core.userdetails.User
-                .withUsername(user.getUsername())
-                .password(user.getPassword())
+                .withUsername(user.username())
+                .password(user.password())
                 .authorities("ROLE_USER") // TODO load roles from DB
                 .build();
     }

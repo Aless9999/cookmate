@@ -10,18 +10,12 @@
 
 package com.macnigor.cookmate.entity;
 
-
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
-@Table("users")
-public record User(
+@Table("recipe_instructions")
+public record RecipeInstructions(
         @Id Long id,
-        String username,
-        String password,
-        String email
+        String instruction
 ) {
-    public User(String username, String password, String email) {
-        this(null, username, password, email);
-    }
 }

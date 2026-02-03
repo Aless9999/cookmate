@@ -10,21 +10,15 @@
 
 package com.macnigor.cookmate.entity;
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
 
-@Entity
-@Table(name = "ingredients")
-@Getter
-@Setter
-public class Ingredient {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Table;
 
-    @Column(unique = true, nullable = false)
-    private String name;
-}
+@Table("ingredients")
+public record Ingredient(
+        @Id Long id,
+        String name
+) {}
+
 
 

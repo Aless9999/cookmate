@@ -11,9 +11,9 @@
 package com.macnigor.cookmate.repositories;
 
 import com.macnigor.cookmate.entity.RecipeIngredient;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface RecipeIngredientRepository extends JpaRepository<RecipeIngredient,Long> {
+public interface RecipeIngredientRepository extends CrudRepository<RecipeIngredient,Long> {
 }
