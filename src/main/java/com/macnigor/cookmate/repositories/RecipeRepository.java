@@ -17,17 +17,14 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.StreamSupport;
 
 @Repository
 public interface RecipeRepository extends CrudRepository<Recipe, Long> {
 
-    @Query("""
-        SELECT DISTINCT r.* FROM recipes r
-        JOIN recipe_ingredients ri ON r.id = ri.recipe_id
-        JOIN ingredients i ON ri.ingredient_id = i.id
-        WHERE LOWER(i.name) IN (:ingredients)
-        ORDER BY r.title ASC
-    """)
-    List<Recipe> findRecipesWithIngredients(@Param("ingredients") List<String> ingredients);
+
 }

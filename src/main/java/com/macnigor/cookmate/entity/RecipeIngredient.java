@@ -19,6 +19,7 @@ import org.springframework.data.relational.core.mapping.Table;
 public record RecipeIngredient(
         @Id Long id,
         Long ingredientId,
+        Long recipeId,
         String amount
 ) {}
 

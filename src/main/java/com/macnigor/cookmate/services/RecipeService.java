@@ -33,8 +33,8 @@ import java.util.stream.StreamSupport;
 @Slf4j
 @Service
 public class RecipeService {
-    private final RecipeRepository recipeRepository;
-private final IngredientRepository ingredientRepository;
+   private final RecipeRepository recipeRepository;
+   private final IngredientRepository ingredientRepository;
 
     public RecipeService(RecipeRepository recipeRepository, IngredientRepository ingredientRepository) {
         this.recipeRepository = recipeRepository;
@@ -48,10 +48,21 @@ private final IngredientRepository ingredientRepository;
 
         // 1. Подготовка данных
         List<String> normalizedIngredients = normalizeIngredients(userIngredients);
-
+        List<Ingredient> ingredientList = StreamSupport.stream(ingredientRepository.findAll().spliterator(),false).toList();
+        List<Ingredient>userIngredient = ingredientList.stream()
+                .filter(ing->ing.name().equals(normalizedIngredients.stream()
+                        .))
         // 2. Получение кандидатов из БД
-        List<Recipe> candidates = recipeRepository.findRecipesWithIngredients(normalizedIngredients);
+        List<Long> ids = recipeRepository.findRecipeIdsByIngredients(normalizedIngredients)
+                .stream()
+                .distinct()
+                .toList();
 
+        List<Recipe> candidates = ingredientList.stream
+                .map(ingr->{
+                    recipeRepository.findAllById(ingr.)
+                }
+        ).toList();
         // 3. Обработка, расчет метрик и сортировка
         List<RecipeMatchDto> results = candidates.stream()
                 .map(recipe -> createMatchDto(recipe, normalizedIngredients))
