@@ -12,7 +12,6 @@ package com.macnigor.cookmate.facade;
 
 import com.macnigor.cookmate.dto.RecipeMessageDto;
 import com.macnigor.cookmate.services.RecipeMessageService;
-import com.macnigor.cookmate.services.RecipeService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,12 +19,14 @@ import java.util.List;
 @Service
 public class RecipeSearchFacade {
     private final RecipeMessageService recipeMessageService;
-    private final RecipeService recipeService;
+    private final RecipeServiceFacade recipeService;
 
-    public RecipeSearchFacade(RecipeMessageService recipeMessageService, RecipeService recipeService) {
+    public RecipeSearchFacade(RecipeMessageService recipeMessageService, RecipeServiceFacade recipeService) {
         this.recipeMessageService = recipeMessageService;
         this.recipeService = recipeService;
     }
+
+
     public List<RecipeMessageDto> searchAndCreateStringMessage(List<String>ingredients){
         return recipeService.searchByIngredients(ingredients)
         .stream()

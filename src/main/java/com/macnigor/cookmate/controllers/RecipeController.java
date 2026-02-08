@@ -34,7 +34,7 @@ public class RecipeController {
              List<String> ingredients) {
         List<RecipeMessageDto> topRecipe = searchFacade.searchAndCreateStringMessage(ingredients);
 
-
+        System.out.println(topRecipe);
          return topRecipe.isEmpty()?
                     ResponseEntity.noContent().build():
                     ResponseEntity.ok(topRecipe);

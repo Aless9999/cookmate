@@ -11,11 +11,18 @@
 package com.macnigor.cookmate.entity;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 @Table("recipe_instructions")
 public record RecipeInstructions(
-        @Id Long id,
-        String instruction
-) {
-}
+        @Id
+        @Column("id") // Защита от ошибки "I" not found
+        Long id,
+
+        @Column("instruction")
+        String instruction,
+
+        @Column("instruction_order") // Связываем поле 'i' с колонкой в БД
+        int i
+) {}

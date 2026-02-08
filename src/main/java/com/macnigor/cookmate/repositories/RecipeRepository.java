@@ -27,4 +27,5 @@ import java.util.stream.StreamSupport;
 public interface RecipeRepository extends CrudRepository<Recipe, Long> {
 
 
+    boolean existsByTitle(String title);
 }

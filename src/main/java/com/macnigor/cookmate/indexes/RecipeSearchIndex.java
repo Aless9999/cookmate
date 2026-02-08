@@ -8,19 +8,20 @@
  *
  */
 
-package com.macnigor.cookmate.services;
+package com.macnigor.cookmate.indexes;
 
 import com.macnigor.cookmate.entity.Ingredient;
 import com.macnigor.cookmate.entity.RecipeIngredient;
 import com.macnigor.cookmate.repositories.IngredientRepository;
 import com.macnigor.cookmate.repositories.RecipeIngredientRepository;
-import com.macnigor.cookmate.repositories.RecipeRepository;
 import jakarta.annotation.PostConstruct;
+import lombok.Getter;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+
 @Component
 public class RecipeSearchIndex {
 
@@ -33,10 +34,14 @@ public class RecipeSearchIndex {
     private Map<String, Long> ingredientNameToId = new HashMap<>();
 
     // ingredientId -> recipeIds
-    private Map<Long, Set<Long>> ingredientToRecipeIds = new HashMap<>();
+    private final Map<Long, Set<Long>> ingredientToRecipeIds = new HashMap<>();
 
     // recipeId -> ingredientIds
-    private Map<Long, Set<Long>> recipeToIngredientIds = new HashMap<>();
+    private final Map<Long, Set<Long>> recipeToIngredientIds = new HashMap<>();
+
+    @Getter
+    private  Map<Long, Ingredient> allIngredientsById = new HashMap<>();
+
 
     public RecipeSearchIndex(
             IngredientRepository ingredientRepository,
@@ -77,6 +82,13 @@ public class RecipeSearchIndex {
                     .computeIfAbsent(ri.recipeId(), k -> new HashSet<>())
                     .add(ri.ingredientId());
         }
+
+        allIngredientsById = ingredients.stream()
+                .collect(Collectors.toMap(
+                        Ingredient::id,
+                        ing->ing,
+                        (a,b)->a
+                ));
     }
 
     // ===================== GETTERS =====================

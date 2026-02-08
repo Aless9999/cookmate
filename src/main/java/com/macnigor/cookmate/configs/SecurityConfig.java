@@ -36,7 +36,11 @@ public class SecurityConfig {
         log.info("Configuring HTTP security settings...");
 
         http
-                .csrf(csrf -> csrf.disable())  // Отключаем CSRF для REST API
+                .csrf(csrf -> csrf.disable())
+                .headers(headers -> headers
+                        // РАЗРЕШАЕМ ФРЕЙМЫ: это исправит ошибку Firefox
+                        .frameOptions(frame -> frame.sameOrigin())
+                )// Отключаем CSRF для REST API
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers("/ImageCook/**").permitAll()

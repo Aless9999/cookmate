@@ -10,12 +10,12 @@
 
 package com.macnigor.cookmate.services;
 
-    // RecipeMessageService.java — сервис для формирования сообщения
+
     import com.macnigor.cookmate.projection.RecipeView;
     import com.macnigor.cookmate.dto.RecipeMessageDto;
     import org.springframework.beans.factory.annotation.Value;
     import org.springframework.stereotype.Service;
-
+//сервис для формирования сообщения
     @Service
     public class RecipeMessageService {
 

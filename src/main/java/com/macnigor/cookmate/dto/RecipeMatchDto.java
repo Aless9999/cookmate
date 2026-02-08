@@ -15,8 +15,8 @@ import java.util.List;
 public record RecipeMatchDto(
         RecipeDto recipe,
         long matchCount,
-        double coveragePercent,
-        List<Integer> amount
+        double coveragePercent
+
 ) {
 }
 
