@@ -10,6 +10,9 @@
 
 package com.macnigor.cookmate.dto;
 
-public record IngredientDto(String name, String amount){
+public record IngredientDto(
+        String name,
+        String amount)
+{
     }
 

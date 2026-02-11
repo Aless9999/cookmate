@@ -12,6 +12,7 @@ package com.macnigor.cookmate.entity;
 
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.ReadOnlyProperty;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -19,18 +20,23 @@ import org.springframework.data.relational.core.mapping.Table;
 @Table("recipe_ingredients")
 public record RecipeIngredient(
         @Id
-        @Column("id") // Защита от ошибки "I" not found
+        @Column("id")
         Long id,
 
         @Column("ingredient_id")
         Long ingredientId,
 
-        @Column("recipe_id") // Позволяет вашему методу init() видеть связь
+        @ReadOnlyProperty
+        @Column("recipe_id")
         Long recipeId,
 
         @Column("amount")
         String amount
-) {}
+) {
+    public RecipeIngredient(Long id, Long ingredientId, String amount) {
+        this(id, ingredientId, 0L, amount);
+    }
+}
 
 
 

@@ -11,6 +11,7 @@
 package com.macnigor.cookmate.indexes;
 
 import com.macnigor.cookmate.entity.Ingredient;
+import com.macnigor.cookmate.entity.Recipe;
 import com.macnigor.cookmate.entity.RecipeIngredient;
 import com.macnigor.cookmate.repositories.IngredientRepository;
 import com.macnigor.cookmate.repositories.RecipeIngredientRepository;
@@ -89,6 +90,32 @@ public class RecipeSearchIndex {
                         ing->ing,
                         (a,b)->a
                 ));
+    }
+
+
+    public void updateIndexes(Recipe recipe) {
+        Long recipeId = recipe.id();
+
+        for (RecipeIngredient ri : recipe.ingredients()) {
+            Long ingredientId = ri.ingredientId();
+
+            // 1. Связь Ингредиент -> Рецепты
+            ingredientToRecipeIds
+                    .computeIfAbsent(ingredientId, k -> new HashSet<>())
+                    .add(recipeId);
+
+            // 2. Связь Рецепт -> Ингредиенты
+            recipeToIngredientIds
+                    .computeIfAbsent(recipeId, k -> new HashSet<>())
+                    .add(ingredientId);
+
+            // 3. Обновляем allIngredientsById и ingredientNameToId,
+            // если в процессе сохранения появились новые ингредиенты
+            ingredientRepository.findById(ingredientId).ifPresent(ing -> {
+                allIngredientsById.putIfAbsent(ingredientId, ing);
+                ingredientNameToId.putIfAbsent(ing.name().toLowerCase(), ingredientId);
+            });
+        }
     }
 
     // ===================== GETTERS =====================
